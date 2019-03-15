@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Test Move Base">
+
+	<executable package_path="robco_flexbe_behaviors.test_move_base_sm" class="TestMoveBaseSM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Sun Mar 10 2019</date>
+	<description>
+		testing move base
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

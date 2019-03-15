@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Containers 2">
+
+	<executable package_path="turtlebot_flexbe_behaviors.containers_2_sm" class="Containers2SM" />
+	<tagstring></tagstring>
+	<author>Ephson</author>
+	<date>Mon Jul 30 2018</date>
+	<description>
+		Using priority and concurrency containers. A demonstration.
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="wait_time_A" default="5" label="wait_time_A" hint="Sets the wait_time_A">
+			<min value="0" />
+			<max value="5" />
+		</param>
+
+		<param type="numeric" name="wait_time_B" default="2" label="wait_time_B" hint="Sets the wait_time_B">
+			<min value="0" />
+			<max value="5" />
+		</param>
+
+	</params>
+
+
+</behavior>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Drive Forward">
+
+	<executable package_path="turtlebot_flexbe_behaviors.drive_forward_sm" class="DriveForwardSM" />
+	<tagstring>drive</tagstring>
+	<author>Ephson</author>
+	<date>Tue Jul 17 2018</date>
+	<description>
+		Enables robot to move a certain distance.
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="my_speed" default="0.4" label="my_speed" hint="Sets the my_speed">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+		<param type="numeric" name="distance_to_travel" default="2" label="distance_to_travel" hint="Sets the distance_to_travel">
+			<min value="0" />
+			<max value="5" />
+		</param>
+
+		<param type="numeric" name="obstance_distance" default="1.5" label="obstance_distance" hint="Sets the obstance_distance">
+			<min value="0" />
+			<max value="2" />
+		</param>
+
+		<param type="numeric" name="turn_angle_3" default="0" label="turn_angle_3" hint="Sets the turn_angle_3">
+			<min value="-90" />
+			<max value="90" />
+		</param>
+
+		<param type="numeric" name="turn_speed" default="0.4" label="turn_speed" hint="Sets the turn_speed">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+	</params>
+
+
+</behavior>

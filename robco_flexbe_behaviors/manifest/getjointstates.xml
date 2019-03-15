@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="GetJointStates">
+
+	<executable package_path="robco_flexbe_behaviors.getjointstates_sm" class="GetJointStatesSM" />
+	<tagstring></tagstring>
+	<author>St</author>
+	<date>Thu Mar 14 2019</date>
+	<description>
+		GetJointStates
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

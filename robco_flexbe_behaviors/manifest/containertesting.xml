@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="ContainerTesting">
+
+	<executable package_path="turtlebot_flexbe_behaviors.containertesting_sm" class="ContainerTestingSM" />
+	<tagstring></tagstring>
+	<author>Ephson</author>
+	<date>Mon Jul 30 2018</date>
+	<description>
+		something description
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="val" default="0.5" label="val" hint="Sets the val">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+		<param type="text" name="pub_topic" default="results" label="pub_topic" hint="Sets the pub_topic" />
+
+		<param type="numeric" name="wait_time" default="3" label="wait_time" hint="Sets the wait_time">
+			<min value="0" />
+			<max value="5" />
+		</param>
+
+		<param type="text" name="msg" default="Custom message" label="msg" hint="Sets the msg" />
+
+	</params>
+
+
+</behavior>

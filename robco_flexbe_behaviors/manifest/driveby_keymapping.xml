@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="DriveBy KeyMapping">
+
+	<executable package_path="turtlebot_flexbe_behaviors.driveby_keymapping_sm" class="DriveByKeyMappingSM" />
+	<tagstring></tagstring>
+	<author>Ephson</author>
+	<date>Mon Jul 30 2018</date>
+	<description>
+		New logic Added
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="my_speed" default="0.4" label="my_speed" hint="Sets the my_speed">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+		<param type="numeric" name="turn_angle" default="90" label="turn_angle" hint="Sets the turn_angle">
+			<min value="-90" />
+			<max value="90" />
+		</param>
+
+		<param type="numeric" name="travel_dist" default="5" label="travel_dist" hint="Sets the travel_dist">
+			<min value="1" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="obstacle_dist" default="1.5" label="obstacle_dist" hint="Sets the obstacle_dist">
+			<min value="0" />
+			<max value="2" />
+		</param>
+
+	</params>
+
+
+</behavior>

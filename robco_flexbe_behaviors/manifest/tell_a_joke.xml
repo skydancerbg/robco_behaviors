@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Tell A Joke">
+
+	<executable package_path="robco_flexbe_behaviors.tell_a_joke_sm" class="TellAJokeSM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Tue Mar 12 2019</date>
+	<description>
+		Tell a random robot joke
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="joke_select" default="0" label="joke_select" hint="Sets the joke_select">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+		<param type="numeric" name="timer_time" default="1" label="timer_time" hint="Sets the timer_time">
+			<min value="0" />
+			<max value="60" />
+		</param>
+
+	</params>
+
+
+</behavior>
