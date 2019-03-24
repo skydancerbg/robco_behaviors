@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="CPRmover4 arm DEMO - English">
+
+	<executable package_path="robco_flexbe_behaviors.cprmover4_arm_demo___english_sm" class="CPRmover4armDEMOEnglishSM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Fri Mar 15 2019</date>
+	<description>
+		CPRmover4 arm demo with english speech, trough sound_play.
+Do not forget to 
+rosrun sound_play soundplay_node.py
+before starting the DEMO
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="move_group test" />
+	<contains name="CPRmover4 arm DEMO - TTS sound_play" />
+
+	<!-- Available Parameters -->
+
+</behavior>

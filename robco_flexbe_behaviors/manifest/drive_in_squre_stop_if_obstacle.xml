@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Drive_In_Squre_Stop_If_Obstacle">
+
+	<executable package_path="robco_flexbe_behaviors.drive_in_squre_stop_if_obstacle_sm" class="Drive_In_Squre_Stop_If_ObstacleSM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Sat Mar 23 2019</date>
+	<description>
+		Drives the robot ina square with side lenght based on imput value, by using cmd_vel and fused odometry. I case of obstacle infornt at the set (input) distace fails.
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="angle_degrees" default="90" label="angle_degrees" hint="Sets the angle_degrees">
+			<min value="-180" />
+			<max value="360" />
+		</param>
+
+		<param type="numeric" name="speed_forward" default="0.3" label="speed_forward" hint="Sets the speed_forward">
+			<min value="0" />
+			<max value="2" />
+		</param>
+
+		<param type="numeric" name="speed_turning" default="0.2" label="speed_turning" hint="Sets the speed_turning">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+		<param type="numeric" name="distance_to_obstacle_stop" default="0.2" label="distance_to_obstacle_stop" hint="Sets the distance_to_obstacle_stop">
+			<min value="0.1" />
+			<max value="100" />
+		</param>
+
+		<param type="numeric" name="distance_forward_metes" default="0.5" label="distance_forward_metes" hint="Sets the distance_forward_metes">
+			<min value="0" />
+			<max value="100" />
+		</param>
+
+	</params>
+
+
+</behavior>

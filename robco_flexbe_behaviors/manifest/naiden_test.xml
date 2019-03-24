@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Naiden_test">
+
+	<executable package_path="robco_flexbe_behaviors.naiden_test_sm" class="Naiden_testSM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Sat Mar 16 2019</date>
+	<description>
+		tststs
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

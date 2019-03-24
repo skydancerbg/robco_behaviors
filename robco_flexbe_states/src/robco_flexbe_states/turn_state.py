@@ -1,101 +1,128 @@
 #!/usr/bin/env python
 import rospy
 import math
-from flexbe_core import EventState, Logger
-from flexbe_core.proxy import ProxyActionClient
 
-from vision_follower.msg import SpinAction, SpinGoal, SpinResult, SpinFeedback
+from flexbe_core import EventState, Logger
+from flexbe_core.proxy import ProxyPublisher, ProxySubscriberCached
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Twist
+from tf import transformations
+
+"""
+#     #################################
+#     # SRG Stefan: 
+#     # Created by Stefan SRG 24.3.2019	
+#     #################################
+"""
 
 class TurnState(EventState):
     '''
-	AvoidObstacleState implements a couple of basic obstacle avoidance algorithms. This state allows the robot to choose a different
-    to go to.
+	Turns the robot in place to a set angle and with set speed.
+    Uses /odom data.
 
-    -- turn_angle   float   The angle that the robot should make
-	-- t_speed 	float 	Speed at which to turn the robot
-	
-	># data_IN float   Holds the remaining distance for the robot to travel
-    
-    #> data_OUT float  Holds the current distance travelled.
+	-- angle 	float 	Angle to turn to in degrees, +/- for direction.
+    -- speed    float   Turn speed
 
-	<= done 		    If turn completed successfully
+	<= failed 			    If behavior is unable to ready on time
+	<= done 				Example for a failure outcome.
 
 	'''
-    def __init__(self, turn_angle, t_speed):
-        super(TurnState, self).__init__(outcomes=['done', 'failed'],
-        input_keys=['data_IN'],
-        output_keys=['data_OUT'])
-        self._turn_angle = turn_angle
-        self._t_speed = t_speed
-        
-        self._topic = '/spin_server_X'
-        
-        #create the action client passing it the spin_topic_name and msg_type
-        self._client = ProxyActionClient({self._topic: SpinAction}) # pass required clients as dict (topic: type)
-        
-        # It may happen that the action client fails to send the action goal.
-        self._error = False
-    
+    def __init__(self, angle, speed):
+
+        super(TurnState, self).__init__(outcomes=['failed', 'done'])
+        self.odom_data = None
+        self.initial_orientation = None
+        self.cur_orientation = None
+        self._angle = angle
+        self._speed = speed
+        self._turn = False
+        self._turn_angle = None
+        self.cmd_pub = Twist()
+        self._vel_topic = '/cmd_vel'
+        self._odom_topic = '/odom'
+
+        #create publisher passing it the vel_topic_name and msg_type
+        self.pub_cmd_vel = ProxyPublisher({self._vel_topic: Twist})
+        #create subscriber
+        self.sub_odom = ProxySubscriberCached({self._odom_topic: Odometry})
+
     def execute(self, userdata):
-        # While this state is active, check if the action has been finished and evaluate the result.
-        
-        # Check if the client failed to send the goal.
-        if self._error:
-            return 'failed'
+
+        if self.sub_odom.has_msg(self._odom_topic):
+            self.data = self.sub_odom.get_last_msg(self._odom_topic)
+            self.sub_odom.remove_last_msg(self._odom_topic)
+            # Logger.loginfo('Odom data.pose.pose.orientation: %s' % self.data.pose.pose.orientation)
+            self.cur_orientation = self.data.pose.pose.orientation
             
-        # Check if the action has been finished
-        if self._client.has_result(self._topic):
-            result = self._client.get_result(self._topic)
-            result_val = result.done
+            cur_angle = transformations.euler_from_quaternion((self.cur_orientation.x, self.cur_orientation.y, 
+            self.cur_orientation.z, self.cur_orientation.w))
+    
+            start_angle = transformations.euler_from_quaternion((self.initial_orientation.x, self.initial_orientation.y, 
+            self.initial_orientation.z, self.initial_orientation.w))
+            # Logger.loginfo('initial orientation: %f' % start_angle[2])
+            # Logger.loginfo('current orientation: %f' % cur_angle[2])
             
-            # Based on the result, decide which outcome to trigger.
-            if result_val == "done":
-                #set the output value to the input value
-                userdata.data_OUT = userdata.data_IN
+            turned_so_far = math.fabs(cur_angle[2] - start_angle[2])
+            # Logger.loginfo      ("The Robot turned so far: %s" % turned_so_far)
+            
+            if (turned_so_far >= self._turn_angle):
+                # Turn completed
+                self._turn = False
+                Logger.loginfo ("Turn successfully completed!")
                 return 'done'
-            else:
-                return 'failed'
-        
-        # Check if there is any feedback
-        if self._client.has_feedback(self._topic):
-            feedback = self._client.get_feedback(self._topic)
-            Logger.loginfo("Current heading is: %s" % feedback.heading)
+                    
+       
+            # Turn the robot
+            if self._turn:
+                self.cmd_pub.linear.x = 0.0
+                if self._angle   > 0:
+                    self.cmd_pub.angular.z = self._speed
+                else:
+                    self.cmd_pub.angular.z = -self._speed
+                self.pub_cmd_vel.publish(self._vel_topic, self.cmd_pub)
             
-        # If the action has not yet finished, no outcome will be returned and the state stays active.
+            else: # Send stop command to the robot if turning is completed
+                self.cmd_pub.angular.z = 0.0
+                self.pub_cmd_vel.publish(self._vel_topic, self.cmd_pub)
 
 
-    def on_enter(self, userdata):
-        # When entering this state, we send the action goal once to let the robot start its work.
-        # Create the goal.
-        goal = SpinGoal()
-        goal.angle = self._turn_angle
-        goal.turn_speed = self._t_speed
-        
-        # Send the goal.
-        self._error = False # make sure to reset the error state since a previous state execution might have failed
-        try:
-            self._client.send_goal(self._topic, goal)
-        except Exception as e:
-            # Since a state failure not necessarily causes a behavior failure, it is recommended to only print warnings, not errors.
-            # Using a linebreak before appending the error log enables the operator to collapse details in the GUI.
-            Logger.logwarn('Failed to send the Spin command:\n%s' % str(e))
-            self._error = True
-        
     def on_exit(self, userdata):
-        # Make sure that the action is not running when leaving this state.
-        # A situation where the action would still be active is for example when the operator manually triggers an outcome.
-        
-        if not self._client.has_result(self._topic):
-            self._client.cancel(self._topic)
-            Logger.loginfo('Cancelled active spin action goal.')
+        self.cmd_pub.angular.z = 0.0
+        self.pub_cmd_vel.publish(self._vel_topic, self.cmd_pub)
+        Logger.loginfo("Turn in place COMPLETED! Exiting the state!")
         
     def on_start(self):
-        Logger.loginfo("Robot Turn state: READY!")
+        Logger.loginfo("Turn in place READY!")
+        # self._start_time = rospy.Time.now() #bug detected! (move to on_enter)
+        if not self.pub_cmd_vel:
+            Logger.loginfo('Failed to setup the publisher.')
+            return 'failed'
+
+        # Read current orientation from /odom  
+        if self.sub_odom.has_msg(self._odom_topic):
+            self.data = self.sub_odom.get_last_msg(self._odom_topic)
+            # Logger.loginfo('Initial Robot orientation: %s' % self.data.pose.pose.orientation)
+            self.cur_orientation = self.data.pose.pose.orientation
+
+
+        # TODO Seting publishing rate - should I do this in FlexBe????
+        r = rospy.Rate(30)
+
+        # Convert the input turn angle value from degrees to Rad
+        self._turn_angle = math.fabs((self._angle   * math.pi)/ 180)
+        # Logger.loginfo ("TAngle to turnt to in Rad: %s" % self._turn_angle)
+        
+        # Save the initial robot orientation in self.initial_orientation for latter use
+        if not self.initial_orientation:
+            Logger.loginfo('if not self.initial_orientation ')
+            self.initial_orientation = self.cur_orientation
+            self._turn = True
+   
         
     def on_stop(self):
-        Logger.loginfo("Robot Turn: Disengaged!")
-        
-        #same implementation as on exit
-        if not self._client.has_result(self._topic):
-            self._client.cancel(self._topic)
-            Logger.loginfo('Cancelled active spin action goal.')
+		# Logger.loginfo("Turn in place STOPPED!")
+		self.cmd_pub.linear.x = 0.0
+		self.pub_cmd_vel.publish(self._vel_topic, self.cmd_pub)
+
+    def scan_callback(self, data):
+        self.data = data

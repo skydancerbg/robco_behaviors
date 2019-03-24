@@ -5,7 +5,7 @@ from flexbe_core.proxy import ProxyPublisher, ProxySubscriberCached
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
-class GoFowardState(EventState):
+class GoFowardFixedDistanceState(EventState):
     '''
 	Driving state for a Robco19. This state allows the robot to drive forward a certain distance
     at a specified velocity/ speed with colision avoicance. Laser scan for obstacle detectionon on /scan_filtered topic.
@@ -14,19 +14,13 @@ class GoFowardState(EventState):
     -- travel_dist float   How far to drive the robot before leaving this state
     -- obstacle_dist float Distance at which to determine blockage of robot path
     
-    ># remaining_travel_dist_IN float   Holds the remaining distance for the robot to travel
-    
-    #> remaining_travel_dist_OUT float  Holds the current distance travelled.
-
 	<= failed 			    If behavior is unable to ready on time
 	<= done 				Example for a failure outcome.
 
 	'''
     def __init__(self, speed, travel_dist, obstacle_dist):
         #add input and output keys
-        super(GoFowardState, self).__init__(outcomes=['failed', 'done'],
-        input_keys=['remaining_travel_dist_IN'], 
-        output_keys=['remaining_travel_dist_OUT'])
+        super(GoFowardFixedDistanceState, self).__init__(outcomes=['failed', 'done'])
         self._start_time = None
         
         #make distance_travelled an Instance variable
@@ -38,7 +32,7 @@ class GoFowardState(EventState):
         self._obstacle_dist = obstacle_dist
 
         self.vel_topic = '/cmd_vel'
-        self.scan_topic = '/scan_filtered'
+        self.scan_topic = '/scan'
 
         #create publisher passing it the vel_topic_name and msg_type
         self.pub = ProxyPublisher({self.vel_topic: Twist})
@@ -46,18 +40,18 @@ class GoFowardState(EventState):
         self.scan_sub = ProxySubscriberCached({self.scan_topic: LaserScan})
     
     def execute(self, userdata):
-        if not self.cmd_pub:
+        if not self.pub:
             return 'failed'
         #run obstacle checks [index 0: left, 360: middle, 719: right]
         if self.scan_sub.has_msg(self.scan_topic):
             self.data = self.scan_sub.get_last_msg(self.scan_topic)
             self.scan_sub.remove_last_msg(self.scan_topic)
-            Logger.loginfo('FWD obstacle distance is: %s' % self.data.ranges[360])
-            if self.data.ranges[360] <= self._obstacle_dist:
+            Logger.loginfo('FWD obstacle distance is: %s' % self.data.ranges[0])
+            if self.data.ranges[0] <= self._obstacle_dist:
                 #self.scan_sub.remove_last_msg(self.scan_topic)
                 self.data = None
                 #set the output key before transitioning
-                userdata.remaining_travel_dist_OUT = self._travel_dist - self.distance_travelled
+                # userdata.remaining_travel_dist_OUT = self._travel_dist - self.distance_travelled
                 return 'failed'
     
         #measure distance travelled
@@ -73,15 +67,16 @@ class GoFowardState(EventState):
 
     def on_enter(self, userdata):
         Logger.loginfo("Drive FWD STARTED!")
+        self._start_time = rospy.Time.now() 
         #set robot speed here
         self.cmd_pub = Twist()
         self.cmd_pub.linear.x = self._speed
         self.cmd_pub.angular.z = 0.0
         
         #check if the input key is set
-        if userdata.remaining_travel_dist_IN:
-            self._travel_dist = userdata.remaining_travel_dist_IN
-            Logger.loginfo("Remaining Distance to Travel: %sm" % self._travel_dist)
+        # if userdata.remaining_travel_dist_IN:
+        #     self._travel_dist = userdata.remaining_travel_dist_IN
+        #     Logger.loginfo("Remaining Distance to Travel: %sm" % self._travel_dist)
         
         #start the timer
         self._start_time = rospy.Time.now()
@@ -94,7 +89,6 @@ class GoFowardState(EventState):
         
     def on_start(self):
         Logger.loginfo("Drive FWD READY!")
-        self._start_time = rospy.Time.now() #bug detected! (move to on_enter)
     
         
     def on_stop(self):
