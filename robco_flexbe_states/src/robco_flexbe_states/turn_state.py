@@ -51,7 +51,7 @@ class TurnState(EventState):
         if self.sub_odom.has_msg(self._odom_topic):
             self.data = self.sub_odom.get_last_msg(self._odom_topic)
             self.sub_odom.remove_last_msg(self._odom_topic)
-            # Logger.loginfo('Odom data.pose.pose.orientation: %s' % self.data.pose.pose.orientation)
+            # Logger.loginfo('New Current orientation from Odom data.pose.pose.orientation: %s' % self.data.pose.pose.orientation)
             self.cur_orientation = self.data.pose.pose.orientation
             
             cur_angle = transformations.euler_from_quaternion((self.cur_orientation.x, self.cur_orientation.y, 
@@ -91,7 +91,9 @@ class TurnState(EventState):
         self.pub_cmd_vel.publish(self._vel_topic, self.cmd_pub)
         Logger.loginfo("Turn in place COMPLETED! Exiting the state!")
         
-    def on_start(self):
+    # def on_start(self):
+    def on_enter(self, userdata):
+
         Logger.loginfo("Turn in place READY!")
         # self._start_time = rospy.Time.now() #bug detected! (move to on_enter)
         if not self.pub_cmd_vel:
@@ -101,7 +103,7 @@ class TurnState(EventState):
         # Read current orientation from /odom  
         if self.sub_odom.has_msg(self._odom_topic):
             self.data = self.sub_odom.get_last_msg(self._odom_topic)
-            # Logger.loginfo('Initial Robot orientation: %s' % self.data.pose.pose.orientation)
+            # Logger.loginfo('Set Initial Current Robot orientation: %s' % self.data.pose.pose.orientation)
             self.cur_orientation = self.data.pose.pose.orientation
 
 
@@ -110,19 +112,23 @@ class TurnState(EventState):
 
         # Convert the input turn angle value from degrees to Rad
         self._turn_angle = math.fabs((self._angle   * math.pi)/ 180)
-        # Logger.loginfo ("TAngle to turnt to in Rad: %s" % self._turn_angle)
+        Logger.loginfo ("Set TurnAngle _ angle to turn to in Rad: %s" % self._turn_angle)
         
         # Save the initial robot orientation in self.initial_orientation for latter use
-        if not self.initial_orientation:
-            Logger.loginfo('if not self.initial_orientation ')
-            self.initial_orientation = self.cur_orientation
-            self._turn = True
+        # if not self.initial_orientation:
+        Logger.loginfo('Save the initial robot orientation ')
+        self.initial_orientation = self.cur_orientation
+        Logger.loginfo('Initial Robot orientation: %s' % self.initial_orientation)
+        # Enable turning
+        self._turn = True
    
         
     def on_stop(self):
-		# Logger.loginfo("Turn in place STOPPED!")
+		Logger.loginfo("Turn in place STOPPED!")
+		self.initial_orientation = None
+		self.cmd_pub.angular.z = 0.0
 		self.cmd_pub.linear.x = 0.0
 		self.pub_cmd_vel.publish(self._vel_topic, self.cmd_pub)
 
-    def scan_callback(self, data):
+    def sub_odom_callback(self, data):
         self.data = data

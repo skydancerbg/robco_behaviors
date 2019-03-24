@@ -8,8 +8,8 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from robco_flexbe_states.turn_state import TurnState
 from robco_flexbe_states.go_forward_fixed_distance_obst_avoid_state import GoFowardFixedDistanceState
+from robco_flexbe_states.turn_state import TurnState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -68,11 +68,11 @@ class Drive_In_Squre_Stop_If_ObstacleSM(Behavior):
 			# x:300 y:158
 			OperatableStateMachine.add('Go Forward Secong Leg',
 										GoFowardFixedDistanceState(speed=self.speed_forward, travel_dist=self.distance_forward_metes, obstacle_dist=self.distance_to_obstacle_stop),
-										transitions={'failed': 'failed', 'done': 'Turn 90 second'},
+										transitions={'failed': 'failed', 'done': 'Turn 180 degrees'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Low})
 
 			# x:326 y:251
-			OperatableStateMachine.add('Turn 90 second',
+			OperatableStateMachine.add('Turn 180 degrees',
 										TurnState(angle=self.angle_degrees, speed=self.speed_turning),
 										transitions={'failed': 'failed', 'done': 'Go Forward Third Leg'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Low})
@@ -80,11 +80,11 @@ class Drive_In_Squre_Stop_If_ObstacleSM(Behavior):
 			# x:301 y:338
 			OperatableStateMachine.add('Go Forward Third Leg',
 										GoFowardFixedDistanceState(speed=self.speed_forward, travel_dist=self.distance_forward_metes, obstacle_dist=self.distance_to_obstacle_stop),
-										transitions={'failed': 'failed', 'done': 'Torn 90 Third'},
+										transitions={'failed': 'failed', 'done': 'Turn to 270 degrees'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Low})
 
 			# x:327 y:429
-			OperatableStateMachine.add('Torn 90 Third',
+			OperatableStateMachine.add('Turn to 270 degrees',
 										TurnState(angle=self.angle_degrees, speed=self.speed_turning),
 										transitions={'failed': 'failed', 'done': 'Go Forward Final Leg'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Low})
@@ -92,11 +92,11 @@ class Drive_In_Squre_Stop_If_ObstacleSM(Behavior):
 			# x:306 y:520
 			OperatableStateMachine.add('Go Forward Final Leg',
 										GoFowardFixedDistanceState(speed=self.speed_forward, travel_dist=self.distance_forward_metes, obstacle_dist=self.distance_to_obstacle_stop),
-										transitions={'failed': 'failed', 'done': 'Turn 90 Finall'},
+										transitions={'failed': 'failed', 'done': 'Turn to 360 degrees'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Low})
 
 			# x:324 y:610
-			OperatableStateMachine.add('Turn 90 Finall',
+			OperatableStateMachine.add('Turn to 360 degrees',
 										TurnState(angle=self.angle_degrees, speed=self.speed_turning),
 										transitions={'failed': 'failed', 'done': 'finished'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Low})

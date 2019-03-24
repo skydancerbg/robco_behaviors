@@ -35,18 +35,18 @@ class GoFowardFixedDistanceState(EventState):
         self.scan_topic = '/scan'
 
         #create publisher passing it the vel_topic_name and msg_type
-        self.pub = ProxyPublisher({self.vel_topic: Twist})
+        self.cmd_vel_pub = ProxyPublisher({self.vel_topic: Twist})
         #create subscriber
         self.scan_sub = ProxySubscriberCached({self.scan_topic: LaserScan})
     
     def execute(self, userdata):
-        if not self.pub:
+        if not self.cmd_pub:
             return 'failed'
         #run obstacle checks [index 0: left, 360: middle, 719: right]
         if self.scan_sub.has_msg(self.scan_topic):
             self.data = self.scan_sub.get_last_msg(self.scan_topic)
             self.scan_sub.remove_last_msg(self.scan_topic)
-            Logger.loginfo('FWD obstacle distance is: %s' % self.data.ranges[0])
+            # Logger.loginfo('FWD obstacle distance is: %s' % self.data.ranges[0])
             if self.data.ranges[0] <= self._obstacle_dist:
                 #self.scan_sub.remove_last_msg(self.scan_topic)
                 self.data = None
@@ -57,13 +57,13 @@ class GoFowardFixedDistanceState(EventState):
         #measure distance travelled
         elapsed_time = (rospy.Time.now() - self._start_time).to_sec()
         self.distance_travelled = (elapsed_time) * self._speed
-        Logger.loginfo("Distance Travelled: %s" % self.distance_travelled)
+        # Logger.loginfo("Distance Travelled: %s" % self.distance_travelled)
     
         if self.distance_travelled >= self._travel_dist:
             return 'done'
         
         #drive
-        self.pub.publish(self.vel_topic, self.cmd_pub)
+        self.cmd_vel_pub.publish(self.vel_topic, self.cmd_pub)
 
     def on_enter(self, userdata):
         Logger.loginfo("Drive FWD STARTED!")
@@ -82,8 +82,9 @@ class GoFowardFixedDistanceState(EventState):
         self._start_time = rospy.Time.now()
         
     def on_exit(self, userdata):
+
         self.cmd_pub.linear.x = 0.0
-        self.pub.publish(self.vel_topic, self.cmd_pub)
+        self.cmd_vel_pub.publish(self.vel_topic, self.cmd_pub)
         #self.scan_sub.unsubscribe_topic(self.scan_topic)
         Logger.loginfo("Drive FWD ENDED!")
         
@@ -93,8 +94,9 @@ class GoFowardFixedDistanceState(EventState):
         
     def on_stop(self):
 		Logger.loginfo("Drive FWD STOPPED!")
+		self.cmd_pub = Twist()
 		self.cmd_pub.linear.x = 0.0
-		self.pub.publish(self.vel_topic, self.cmd_pub)
+		self.cmd_vel_pub.publish(self.vel_topic, self.cmd_pub)
 
     def scan_callback(self, data):
         self.data = data
