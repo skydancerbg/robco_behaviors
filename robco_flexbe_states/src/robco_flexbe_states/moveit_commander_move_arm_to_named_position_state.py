@@ -40,7 +40,7 @@ class MoveitCommanderMoveGroupNamedPositiomState(EventState):
    
     Logger.loginfo("About to make mgc in init with group %s" % self._planning_group)
     # self.group_to_move = moveit_commander.MoveGroupCommander(self._planning_group)
-    self.group_to_move = moveit_commander.MoveGroupCommander('robot')
+    self.group_to_move = moveit_commander.MoveGroupCommander(self._planning_group)
 
     Logger.loginfo("finished making mgc in init.")
 
@@ -64,7 +64,7 @@ class MoveitCommanderMoveGroupNamedPositiomState(EventState):
     self.group_to_move.set_start_state_to_current_state()
     self.group_to_move.clear_pose_targets()
     self.group_to_move.get_current_pose()
-    self.group_to_move.set_named_target("reach_up")
+    self.group_to_move.set_named_target(self._named_position)
 
 
     # execute the motion

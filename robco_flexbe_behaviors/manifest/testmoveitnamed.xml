@@ -18,7 +18,7 @@
 
 		<param type="text" name="named_position_name" default="reach_up" label="named_position_name" hint="Sets the named_position_name" />
 
-		<param type="text" name="planning_group_name" default="robot" label="planning_group_name" hint="Sets the planning_group_name" />
+		<param type="text" name="planning_group_name" default="arm" label="planning_group_name" hint="Sets the planning_group_name" />
 
 	</params>
 

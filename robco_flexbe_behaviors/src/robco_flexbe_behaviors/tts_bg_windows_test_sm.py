@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from robco_flexbe_states.moveit_commander_move_arm_to_named_position_state import MoveitCommanderMoveGroupNamedPositiomState
+from robco_flexbe_states.tts_bg_sm import TTSBulgarian
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -16,22 +16,20 @@ from robco_flexbe_states.moveit_commander_move_arm_to_named_position_state impor
 
 
 '''
-Created on Wed Mar 13 2019
+Created on Wed Apr 03 2019
 @author: Stefan
 '''
-class testMoveItNamedSM(Behavior):
+class TTS_BG_Windows_testSM(Behavior):
 	'''
-	testMoveItNamed
+	delete after the test
 	'''
 
 
 	def __init__(self):
-		super(testMoveItNamedSM, self).__init__()
-		self.name = 'testMoveItNamed'
+		super(TTS_BG_Windows_testSM, self).__init__()
+		self.name = 'TTS_BG_Windows_test'
 
 		# parameters of this behavior
-		self.add_parameter('named_position_name', 'reach_up')
-		self.add_parameter('planning_group_name', 'arm')
 
 		# references to used behaviors
 
@@ -55,11 +53,11 @@ class testMoveItNamedSM(Behavior):
 
 
 		with _state_machine:
-			# x:213 y:84
-			OperatableStateMachine.add('Move To reach_up Position',
-										MoveitCommanderMoveGroupNamedPositiomState(planning_group=self.planning_group_name, named_position=self.named_position_name),
-										transitions={'reached': 'finished', 'failed': 'failed'},
-										autonomy={'reached': Autonomy.Off, 'failed': Autonomy.Off})
+			# x:30 y:40
+			OperatableStateMachine.add('TTS',
+										TTSBulgarian(ttsbg_text="Ехоо, това е български език. Иван е готин пич!"),
+										transitions={'failed': 'failed', 'done': 'finished'},
+										autonomy={'failed': Autonomy.Low, 'done': Autonomy.Low})
 
 
 		return _state_machine

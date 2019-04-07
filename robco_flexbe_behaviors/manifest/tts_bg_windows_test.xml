@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="TTS_BG_Windows_test">
+
+	<executable package_path="robco_flexbe_behaviors.tts_bg_windows_test_sm" class="TTS_BG_Windows_testSM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Wed Apr 03 2019</date>
+	<description>
+		delete after the test
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>
