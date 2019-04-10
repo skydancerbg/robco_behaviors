@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Robco19e Full Demo 2019">
+
+	<executable package_path="robco_flexbe_behaviors.robco19e_full_demo_2019_sm" class="Robco19eFullDemo2019SM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Tue Apr 09 2019</date>
+	<description>
+		Robco19e Full Demo 2019
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="Tell a joke Bulgarian" />
+	<contains name="Drive_In_Squre_Stop_If_Obstacle" />
+
+	<!-- Available Parameters -->
+
+</behavior>

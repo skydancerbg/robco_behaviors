@@ -8,7 +8,8 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from robco_flexbe_states.moveit_commander_move_arm_to_named_position_state import MoveitCommanderMoveGroupNamedPositiomState
+from robco_flexbe_states.pick_robot_joke_state import PickRobotJokeState
+from robco_flexbe_states.tts_bg_from_incomming_key_state import TTSBulgarianFromIncommingKey
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -16,22 +17,20 @@ from robco_flexbe_states.moveit_commander_move_arm_to_named_position_state impor
 
 
 '''
-Created on Wed Mar 13 2019
+Created on Sun Apr 07 2019
 @author: Stefan
 '''
-class testMoveItNamedSM(Behavior):
+class TellajokeBulgarianSM(Behavior):
 	'''
-	testMoveItNamed
+	Tell a joke in Bulgarian
 	'''
 
 
 	def __init__(self):
-		super(testMoveItNamedSM, self).__init__()
-		self.name = 'testMoveItNamed'
+		super(TellajokeBulgarianSM, self).__init__()
+		self.name = 'Tell a joke Bulgarian'
 
 		# parameters of this behavior
-		self.add_parameter('named_position_name', 'reach_up')
-		self.add_parameter('planning_group_name', 'arm')
 
 		# references to used behaviors
 
@@ -55,11 +54,19 @@ class testMoveItNamedSM(Behavior):
 
 
 		with _state_machine:
-			# x:213 y:84
-			OperatableStateMachine.add('Move To reach_up Position',
-										MoveitCommanderMoveGroupNamedPositiomState(planning_group=self.planning_group_name, named_position=self.named_position_name),
-										transitions={'reached': 'finished', 'failed': 'failed'},
-										autonomy={'reached': Autonomy.Off, 'failed': Autonomy.Off})
+			# x:161 y:85
+			OperatableStateMachine.add('Pick a joke',
+										PickRobotJokeState(),
+										transitions={'done': 'say joke'},
+										autonomy={'done': Autonomy.Off},
+										remapping={'robot_joke_OUT': 'robot_joke_OUT'})
+
+			# x:411 y:131
+			OperatableStateMachine.add('say joke',
+										TTSBulgarianFromIncommingKey(),
+										transitions={'failed': 'failed', 'done': 'finished'},
+										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Off},
+										remapping={'ttsbg_text': 'robot_joke_OUT'})
 
 
 		return _state_machine

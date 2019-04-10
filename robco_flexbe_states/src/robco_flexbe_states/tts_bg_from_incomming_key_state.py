@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import rospy
 import math
 
@@ -49,7 +48,7 @@ from std_msgs.msg import String
 #   This state is of type fire and forget - no response from the TTS engine, even if it does not exist...
 #   Create action server and a new FlexBe state, which to be able to get the current state of the TTS engine
 
-class TTSBulgarian(EventState):
+class TTSBulgarianFromIncommingKey(EventState):
     '''
     TTS in Bulgarian language, sends messages trough MQTT to the Windows TTS VM console app.
     Sends a string to /ttsbg_mqtt/tts_text MQTT topic,
@@ -57,33 +56,36 @@ class TTSBulgarian(EventState):
     mqtt_bridge resends the ROS message to the MQTT broker on /ttsbg_mqtt/tts_text.
     Default MQTT broker IP is 192.168.1.2
 
-    -- ttsbg_text    String   Text to be synthesized
+    ># ttsbg_text       String      Incomming key - text to be synthesized
 
-    <= failed                             If behavior is unable to send the TTS message
-    <= done                                 TTS message sent succesfully
+    <= failed                       If behavior is unable to send the TTS message
+    <= done                         TTS message sent succesfully
     '''
 
-    def __init__(self, ttsbg_text):
+    def __init__(self):
 
-        super(TTSBulgarian, self).__init__(outcomes=['failed', 'done'])
-
-        self._ttsbg_text_to_be_synthesized = ttsbg_text
+        super(TTSBulgarianFromIncommingKey, self).__init__(input_keys=['ttsbg_text'],
+                                                       outcomes=['failed', 'done'])
+        self._ttsbg_text_to_be_synthesized = None 
         self._ttsbg_text_to_be_synthesized_topic = '/ttsbg_ros/tts_text'
         self._ttsbg_command_topic = '/ttsbg_ros/command'
         self._ttsbg_response_topic = '/ttsbg_ros/response'
         #create publisher passing it the ttsbg_topic and msg_type
-        self.pub_ttsbg_text = ProxyPublisher({self._ttsbg_text_to_be_synthesized_topic: String})
-        #create publisher passing it the ttsbg_topic and msg_type
-        self.pub_ttsbg_command = ProxyPublisher({self._ttsbg_command_topic: String})
+        self.pub = ProxyPublisher({self._ttsbg_text_to_be_synthesized_topic: String, self._ttsbg_command_topic: String})
+        # #create publisher passing it the ttsbg_command and msg_type
+        # self.pub_ttsbg_command = ProxyPublisher({self._ttsbg_command_topic: String})
 
         #create subscriber
-        self.sub_ttsbg_response = ProxySubscriberCached({self._ttsbg_response_topic: String})
+        # self.sub_ttsbg_response = ProxySubscriberCached({self._ttsbg_response_topic: String})
+        self.sub = ProxySubscriberCached({self._ttsbg_response_topic: String})
+
+    def on_enter(self, userdata):
+        self._ttsbg_text_to_be_synthesized = userdata.ttsbg_text
 
     def execute(self, userdata):
 
         # Logger.loginfo('V execute sam....')
-        self.pub_ttsbg_text.publish(self._ttsbg_text_to_be_synthesized_topic, self._ttsbg_text_to_be_synthesized.decode('utf-8'))
-
+        self.pub.publish(self._ttsbg_text_to_be_synthesized_topic, self._ttsbg_text_to_be_synthesized.decode('utf-8'))
         return 'done'
 
 

@@ -20,7 +20,7 @@ from robco_flexbe_behaviors.cprmover4_arm_demo___tts_sound_play_sm import CPRmov
 Created on Fri Mar 15 2019
 @author: Stefan
 '''
-class CPRmover4armDEMOEnglishSM(Behavior):
+class CPRmover4fluidmotionDEMOBulgarianSM(Behavior):
 	'''
 	CPRmover4 arm demo with english speech, trough sound_play.
 Do not forget to 
@@ -30,8 +30,8 @@ before starting the DEMO
 
 
 	def __init__(self):
-		super(CPRmover4armDEMOEnglishSM, self).__init__()
-		self.name = 'CPRmover4 arm DEMO - English'
+		super(CPRmover4fluidmotionDEMOBulgarianSM, self).__init__()
+		self.name = 'CPRmover4 fluid motion DEMO - Bulgarian'
 
 		# parameters of this behavior
 
@@ -57,7 +57,7 @@ before starting the DEMO
 		
 		# [/MANUAL_CREATE]
 
-		# x:761 y:285, x:882 y:290, x:230 y:365, x:330 y:365, x:430 y:365, x:530 y:365
+		# x:761 y:285, x:882 y:290, x:230 y:365, x:330 y:365, x:430 y:365
 		_sm_container_0 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
 										('finished', [('move_group test', 'finished'), ('CPRmover4 arm DEMO - TTS sound_play', 'finished')]),
 										('failed', [('move_group test', 'failed')]),

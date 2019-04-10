@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Tell a joke Bulgarian">
+
+	<executable package_path="robco_flexbe_behaviors.tell_a_joke_bulgarian_sm" class="TellajokeBulgarianSM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Sun Apr 07 2019</date>
+	<description>
+		Tell a joke in Bulgarian
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

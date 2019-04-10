@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from robco_flexbe_states.speak_via_sound_play_no_input_key_state import SpeechOutputEnglishParamTextState
+from robco_flexbe_behaviors.tell_a_joke_bulgarian_sm import TellajokeBulgarianSM
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -16,22 +16,23 @@ from robco_flexbe_states.speak_via_sound_play_no_input_key_state import SpeechOu
 
 
 '''
-Created on Fri Mar 15 2019
+Created on Mon Apr 08 2019
 @author: Stefan
 '''
-class CPRmover4armDEMOTTSsound_playSM(Behavior):
+class Robco19VoiceControlledDemoSM(Behavior):
 	'''
-	CPRmover4 arm DEMO - TTS sound_play speks out the demo text
+	Robco19 Voice Controlled Demo
 	'''
 
 
 	def __init__(self):
-		super(CPRmover4armDEMOTTSsound_playSM, self).__init__()
-		self.name = 'CPRmover4 arm DEMO - TTS sound_play'
+		super(Robco19VoiceControlledDemoSM, self).__init__()
+		self.name = 'Robco19 Voice Controlled Demo'
 
 		# parameters of this behavior
 
 		# references to used behaviors
+		self.add_behavior(TellajokeBulgarianSM, 'Tell a joke Bulgarian')
 
 		# Additional initialization code can be added inside the following tags
 		# [MANUAL_INIT]
@@ -53,11 +54,11 @@ class CPRmover4armDEMOTTSsound_playSM(Behavior):
 
 
 		with _state_machine:
-			# x:140 y:134
-			OperatableStateMachine.add('Say Demo Text',
-										SpeechOutputEnglishParamTextState(text_to_speak="A robotic arm is a type of mechanical arm, usually programmable, with similar functions to a human arm; the arm may be the sum total of the mechanism or may be part of a more complex robot. The links of such a manipulator are connected by joints allowing either rotational motion (such as in an articulated robot) or translational (linear) displacement. The links of the manipulator can be considered to form a kinematic chain. The terminus of the kinematic chain of the manipulator is called the end effector and it is analogous to the human hand."),
-										transitions={'done': 'finished', 'failed': 'failed'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
+			# x:185 y:142
+			OperatableStateMachine.add('Tell a joke Bulgarian',
+										self.use_behavior(TellajokeBulgarianSM, 'Tell a joke Bulgarian'),
+										transitions={'finished': 'finished', 'failed': 'failed'},
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
 
 		return _state_machine

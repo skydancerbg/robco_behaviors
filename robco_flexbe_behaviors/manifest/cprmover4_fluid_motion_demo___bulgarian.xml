@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<behavior name="CPRmover4 arm DEMO - English">
+<behavior name="CPRmover4 fluid motion DEMO - Bulgarian">
 
-	<executable package_path="robco_flexbe_behaviors.cprmover4_arm_demo___english_sm" class="CPRmover4armDEMOEnglishSM" />
+	<executable package_path="robco_flexbe_behaviors.cprmover4_fluid_motion_demo___bulgarian_sm" class="CPRmover4fluidmotionDEMOBulgarianSM" />
 	<tagstring></tagstring>
 	<author>Stefan</author>
 	<date>Fri Mar 15 2019</date>
