@@ -53,8 +53,28 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 		
 		# [/MANUAL_CREATE]
 
-		# x:844 y:69, x:586 y:560, x:242 y:373, x:16 y:367, x:156 y:366, x:578 y:490, x:857 y:563, x:730 y:365
-		_sm_move_to_pick_from_small_table_0 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
+		# x:30 y:365, x:130 y:365, x:230 y:365, x:330 y:365
+		_sm_vstapitelno_slovo_0 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
+										('finished', [('govori', 'done'), ('give time to speak', 'done')]),
+										('failed', [('govori', 'failed')])
+										])
+
+		with _sm_vstapitelno_slovo_0:
+			# x:86 y:149
+			OperatableStateMachine.add('govori',
+										TTSBulgarian(ttsbg_text='Нека Ви се представя, аз съм Телеуправляемия Сервизен Робот Робко 19. За мен е чест да участвам в ГОДИШНАТА МЕЖДУНАРОДНА НАУЧНА КОНФЕРЕНЦИЯ НА АВИАЦИОННИЯ ФАКУЛТЕТ. Създаден съм от групата по сервизна роботика по проект, Финансиран от Фонда Научни изследвания. Сега ще направя кратка демонстрация на част от моите възможности.'),
+										transitions={'failed': 'failed', 'done': 'finished'},
+										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Off})
+
+			# x:282 y:111
+			OperatableStateMachine.add('give time to speak',
+										WaitState(wait_time=20),
+										transitions={'done': 'finished'},
+										autonomy={'done': Autonomy.Off})
+
+
+		# x:844 y:69, x:586 y:560, x:242 y:373, x:16 y:367, x:156 y:366, x:578 y:490, x:857 y:563
+		_sm_move_to_pick_from_small_table_1 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
 										('finished', [('Move to pick_from_small_table', 'reached'), ('Timer give time for motion to execute', 'done'), ('say text', 'done')]),
 										('failed', [('Move to pick_from_small_table', 'param_error')]),
 										('failed', [('Move to pick_from_small_table', 'planning_failed')]),
@@ -62,7 +82,7 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										('failed', [('say text', 'failed')])
 										])
 
-		with _sm_move_to_pick_from_small_table_0:
+		with _sm_move_to_pick_from_small_table_1:
 			# x:71 y:40
 			OperatableStateMachine.add('Move to pick_from_small_table',
 										SrdfStateToMoveit(config_name="pick_from_small_table", move_group="robot", action_topic='/move_group', robot_name=""),
@@ -83,8 +103,8 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Off})
 
 
-		# x:851 y:66, x:441 y:472, x:63 y:338, x:277 y:369, x:179 y:364, x:374 y:469, x:630 y:365, x:730 y:365
-		_sm_move_back_to_transport_position_1 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
+		# x:851 y:66, x:441 y:472, x:63 y:338, x:277 y:369, x:179 y:364, x:374 y:469, x:630 y:365
+		_sm_move_back_to_transport_position_2 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
 										('finished', [('Timer give time for motion to execute', 'done'), ('move to transport_position', 'reached'), ('say text', 'done')]),
 										('failed', [('move to transport_position', 'planning_failed')]),
 										('failed', [('move to transport_position', 'control_failed')]),
@@ -92,7 +112,7 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										('failed', [('say text', 'failed')])
 										])
 
-		with _sm_move_back_to_transport_position_1:
+		with _sm_move_back_to_transport_position_2:
 			# x:118 y:45
 			OperatableStateMachine.add('move to transport_position',
 										SrdfStateToMoveit(config_name="transport_position", move_group="robot", action_topic='/move_group', robot_name=""),
@@ -113,8 +133,8 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Off})
 
 
-		# x:614 y:41, x:129 y:345, x:179 y:346, x:347 y:338, x:430 y:365, x:530 y:365, x:630 y:365, x:730 y:365
-		_sm_move_to_place_on_tall_table_2 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
+		# x:614 y:41, x:129 y:345, x:179 y:346, x:347 y:338, x:430 y:365, x:530 y:365, x:630 y:365
+		_sm_move_to_place_on_tall_table_3 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
 										('finished', [('Move to place_on_tall_table', 'reached'), ('Timer give time for motion to execute', 'done'), ('say text', 'done')]),
 										('failed', [('Move to place_on_tall_table', 'planning_failed')]),
 										('failed', [('Move to place_on_tall_table', 'control_failed')]),
@@ -122,7 +142,7 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										('failed', [('say text', 'failed')])
 										])
 
-		with _sm_move_to_place_on_tall_table_2:
+		with _sm_move_to_place_on_tall_table_3:
 			# x:30 y:40
 			OperatableStateMachine.add('Move to place_on_tall_table',
 										SrdfStateToMoveit(config_name="place_on_tall_table", move_group="robot", action_topic='/move_group', robot_name=""),
@@ -138,13 +158,13 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 
 			# x:410 y:128
 			OperatableStateMachine.add('say text',
-										TTSBulgarian(ttsbg_text="Сега ще придвижа ръката наляво и нагоре"),
+										TTSBulgarian(ttsbg_text="Сега ще придвижа ръката наляво"),
 										transitions={'failed': 'failed', 'done': 'finished'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Off})
 
 
-		# x:296 y:148, x:130 y:365, x:230 y:365, x:330 y:365, x:430 y:365, x:530 y:365, x:630 y:365, x:730 y:365
-		_sm_move_to_reach_up_position_3 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
+		# x:296 y:148, x:130 y:365, x:230 y:365, x:330 y:365, x:430 y:365, x:530 y:365, x:630 y:365
+		_sm_move_to_reach_up_position_4 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
 										('finished', [('Move to reach_up position', 'reached'), ('Timer give time for motion to execute', 'done'), ('say text', 'done')]),
 										('failed', [('Move to reach_up position', 'planning_failed')]),
 										('failed', [('Move to reach_up position', 'control_failed')]),
@@ -152,7 +172,7 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										('failed', [('say text', 'failed')])
 										])
 
-		with _sm_move_to_reach_up_position_3:
+		with _sm_move_to_reach_up_position_4:
 			# x:30 y:40
 			OperatableStateMachine.add('Move to reach_up position',
 										SrdfStateToMoveit(config_name="reach_up", move_group="robot", action_topic='/move_group', robot_name=""),
@@ -173,8 +193,8 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Off})
 
 
-		# x:825 y:119, x:130 y:365, x:230 y:365, x:330 y:365, x:430 y:365, x:615 y:337, x:630 y:378, x:730 y:365, x:830 y:365
-		_sm_move_to_transport_position_4 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
+		# x:825 y:119, x:130 y:365, x:230 y:365, x:330 y:365, x:430 y:365, x:615 y:337, x:630 y:378
+		_sm_move_to_transport_position_5 = ConcurrencyContainer(outcomes=['finished', 'failed'], conditions=[
 										('finished', [('Timer give time for motion to execute', 'done'), ('Move to transport_position', 'reached'), ('Say text in Bulgarian', 'done')]),
 										('failed', [('Move to transport_position', 'param_error')]),
 										('failed', [('Move to transport_position', 'control_failed')]),
@@ -182,7 +202,7 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 										('failed', [('Say text in Bulgarian', 'failed')])
 										])
 
-		with _sm_move_to_transport_position_4:
+		with _sm_move_to_transport_position_5:
 			# x:37 y:92
 			OperatableStateMachine.add('Move to transport_position',
 										SrdfStateToMoveit(config_name="transport_position", move_group="robot", action_topic='/move_group', robot_name=""),
@@ -192,47 +212,53 @@ class CPRmover4_timed_demo_BG_ttsSM(Behavior):
 
 			# x:294 y:38
 			OperatableStateMachine.add('Timer give time for motion to execute',
-										WaitState(wait_time=17),
+										WaitState(wait_time=10),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:387 y:156
 			OperatableStateMachine.add('Say text in Bulgarian',
-										TTSBulgarian(ttsbg_text="Докато се движа, ще ви демонстрирам някои движения на ръката."),
+										TTSBulgarian(ttsbg_text="Сега ще Ви демонстрирам някои движения на ръката си."),
 										transitions={'failed': 'failed', 'done': 'finished'},
 										autonomy={'failed': Autonomy.Off, 'done': Autonomy.Off})
 
 
 
 		with _state_machine:
-			# x:148 y:20
-			OperatableStateMachine.add('Move to transport position',
-										_sm_move_to_transport_position_4,
-										transitions={'finished': 'Move to reach_up position', 'failed': 'failed'},
+			# x:32 y:34
+			OperatableStateMachine.add('Vstapitelno slovo',
+										_sm_vstapitelno_slovo_0,
+										transitions={'finished': 'Move to transport position', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
-			# x:229 y:107
+			# x:248 y:156
 			OperatableStateMachine.add('Move to reach_up position',
-										_sm_move_to_reach_up_position_3,
+										_sm_move_to_reach_up_position_4,
 										transitions={'finished': 'Move to place_on_tall_table', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
-			# x:273 y:188
+			# x:263 y:253
 			OperatableStateMachine.add('Move to place_on_tall_table',
-										_sm_move_to_place_on_tall_table_2,
+										_sm_move_to_place_on_tall_table_3,
 										transitions={'finished': 'Move to pick_from_small_table', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
 			# x:651 y:612
 			OperatableStateMachine.add('Move back to transport_position',
-										_sm_move_back_to_transport_position_1,
+										_sm_move_back_to_transport_position_2,
 										transitions={'finished': 'finished', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
 			# x:637 y:272
 			OperatableStateMachine.add('Move to pick_from_small_table',
-										_sm_move_to_pick_from_small_table_0,
+										_sm_move_to_pick_from_small_table_1,
 										transitions={'finished': 'Move back to transport_position', 'failed': 'failed'},
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
+
+			# x:252 y:63
+			OperatableStateMachine.add('Move to transport position',
+										_sm_move_to_transport_position_5,
+										transitions={'finished': 'Move to reach_up position', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Demo move base and arm simultaneously">
+
+	<executable package_path="robco_flexbe_behaviors.demo_move_base_and_arm_simultaneously_sm" class="DemomovebaseandarmsimultaneouslySM" />
+	<tagstring></tagstring>
+	<author>Stefan</author>
+	<date>Wed Apr 10 2019</date>
+	<description>
+		Demo move base and arm simultaneously
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="Drive_In_Squre_Stop_If_Obstacle" />
+
+	<!-- Available Parameters -->
+
+</behavior>

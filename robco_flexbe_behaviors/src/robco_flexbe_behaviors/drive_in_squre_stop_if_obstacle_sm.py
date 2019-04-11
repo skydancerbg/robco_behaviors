@@ -34,7 +34,7 @@ class Drive_In_Squre_Stop_If_ObstacleSM(Behavior):
 		self.add_parameter('angle_degrees', 90)
 		self.add_parameter('speed_forward', 0.3)
 		self.add_parameter('speed_turning', 0.2)
-		self.add_parameter('distance_to_obstacle_stop', 0.2)
+		self.add_parameter('distance_to_obstacle_stop', 0.3)
 		self.add_parameter('distance_forward_metes', 0.5)
 
 		# references to used behaviors
